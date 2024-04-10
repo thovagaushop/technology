@@ -9,7 +9,7 @@ x-templates:
     restart: always
     env_file: .env.production.local
     depends_on:
-      - redis
+      # - redis
       - postgresql
 
 services:
@@ -72,15 +72,15 @@ services:
     ports:
       - ${PUBLISH_PG_PORT:-5432}:5432
 
-  redis:
-    image: redis:7-alpine
-    networks:
-      - solemp
-    volumes:
-      - ${REDIS_DATA:-./tmp/redis-data}:/data
-    restart: always
-    ports:
-      - '${PUBLISH_REDIS_PORT:-6379}:6379'
+  # redis:
+  #   image: redis:7-alpine
+  #   networks:
+  #     - solemp
+  #   volumes:
+  #     - ${REDIS_DATA:-./tmp/redis-data}:/data
+  #   restart: always
+  #   ports:
+  #     - '${PUBLISH_REDIS_PORT:-6379}:6379'
 
 networks:
   solemp:
