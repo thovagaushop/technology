@@ -18,7 +18,7 @@ services:
     # command: sh -c "node bin/server.js >> log/api.log"
     command: node bin/server.js
     networks:
-      - solemp
+      - technology
     env_file: .env
     volumes:
       - ./log/api.log:/app/build/log/api.log
@@ -30,6 +30,7 @@ services:
       - ${PUBLISH_APP_PORT:-3333}:${PORT:-3333}
     labels:
       - 'traefik.enable=true'
+      - 'traefik.http.routers.api.rule=Host(`txvitdev.io.vn`)'
       - 'traefik.http.services.api.loadbalancer.server.port=${PORT:-3333}'
 
   # api-queue:
@@ -49,24 +50,24 @@ services:
   #     - 'traefik.enable=true'
   #     - 'traefik.http.services.api-queue-dashboard.loadbalancer.server.port=9999'
 
-  # traefik:
-  #     image: 'traefik:v3.0'
-  #     container_name: 'traefik'
-  #     ports:
-  #       - '80:80'
-  #       - '443:443'
-  #     volumes:
-  #       - /etc/traefik:/etc/traefik
-  #       - /var/run/docker.sock:/var/run/docker.sock:ro
+  traefik:
+    image: 'traefik:v3.0'
+    container_name: 'traefik'
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - /etc/traefik:/etc/traefik
+      - /var/run/docker.sock:/var/run/docker.sock:ro
   postgresql:
     image: postgres:16-alpine
     networks:
-      - solemp
+      - technology
     restart: always
     volumes:
       - ${PG_DATA:-./tmp/postgresql-data}:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-solemp@123}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_DB: ${DB_DATABASE}
     ports:
@@ -83,5 +84,4 @@ services:
   #     - '${PUBLISH_REDIS_PORT:-6379}:6379'
 
 networks:
-  solemp:
-    driver: bridge
+  technology:
